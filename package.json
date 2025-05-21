@@ -1,5 +1,5 @@
 {
-	"name": "n8n-nodes-elevenlabs",
+	"name": "elevenlabs-n8n-node",
 	"version": "0.1.0",
 	"description": "Official ElevenLabs node for n8n",
 	"keywords": [
