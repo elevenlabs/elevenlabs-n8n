@@ -30,7 +30,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/elevenlabs/elevenlabs-n8n.git"
+		"url": "git+https://github.com/elevenlabs/elevenlabs-n8n.git"
 	},
 	"engines": {
 		"node": ">=20.15"
@@ -42,7 +42,7 @@
 		"format": "prettier nodes credentials --write",
 		"lint": "eslint nodes credentials package.json",
 		"lintfix": "eslint nodes credentials package.json --fix",
-		"prepublishOnly": "npm build && npm lint -c .eslintrc.prepublish.js nodes credentials package.json"
+		"prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
 	},
 	"files": [
 		"dist"
