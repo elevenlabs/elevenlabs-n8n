@@ -18,15 +18,16 @@ export class ElevenLabsApi implements ICredentialType {
 			default: '',
 		},
 	];
+
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
 			headers: {
 				'xi-api-key': '={{$credentials.xiApiKey}}',
-				accept: 'application/json',
 			},
 		},
 	};
+
 	test?: ICredentialTestRequest | undefined = {
 		request: {
 			baseURL: 'https://api.elevenlabs.io/v1',

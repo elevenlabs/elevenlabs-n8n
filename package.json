@@ -1,5 +1,5 @@
 {
-	"name": "elevenlabs-n8n-node",
+	"name": "@elevenlabs/n8n-nodes-elevenlabs",
 	"version": "0.1.0",
 	"description": "Official ElevenLabs node for n8n",
 	"keywords": [
@@ -50,15 +50,14 @@
 	"n8n": {
 		"n8nNodesApiVersion": 1,
 		"credentials": [
-			"dist/credentials/ExampleCredentialsApi.credentials.js",
-			"dist/credentials/HttpBinApi.credentials.js"
+			"dist/credentials/ElevenLabsApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/ExampleNode/ExampleNode.node.js",
-			"dist/nodes/HttpBin/HttpBin.node.js"
+			"dist/nodes/ElevenLabs/ElevenLabs.node.js"
 		]
 	},
 	"devDependencies": {
+    "@types/node": "^20.12.8",
 		"@typescript-eslint/parser": "~8.32.0",
 		"eslint": "^8.57.0",
 		"eslint-plugin-n8n-nodes-base": "^1.16.3",
@@ -68,8 +67,5 @@
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
-	},
-	"dependencies": {
-		"@devlikeapro/n8n-openapi-node": "^0.1.4"
 	}
 }
