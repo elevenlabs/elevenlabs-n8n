@@ -15,6 +15,7 @@ export class ElevenLabs implements INodeType {
 		defaults: {
 			name: 'ElevenLabs',
 		},
+		usableAsTool: true,
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
 		credentials: [

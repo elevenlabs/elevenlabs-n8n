@@ -28,9 +28,9 @@ export class ElevenLabsApi implements ICredentialType {
 		},
 	};
 
-	test?: ICredentialTestRequest | undefined = {
+	test: ICredentialTestRequest | undefined = {
 		request: {
-			baseURL: 'https://api.elevenlabs.io/v1',
+			baseURL: 'https://api.elevenlabs.io/v2',
 			url: '/voices',
 		},
 	};

@@ -393,7 +393,7 @@ export const SpeechFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['speech'],
-				operation: ['speedchToSpeech'],
+				operation: ['speechToSpeech'],
 			},
 		},
 		options: [
