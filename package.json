@@ -1,6 +1,6 @@
 {
 	"name": "@elevenlabs/n8n-nodes-elevenlabs",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Official ElevenLabs node for n8n",
 	"keywords": [
 		"n8n-community-node-package",
@@ -57,7 +57,7 @@
 		]
 	},
 	"devDependencies": {
-    "@types/node": "^20.12.8",
+		"@types/node": "^20.12.8",
 		"@typescript-eslint/parser": "~8.32.0",
 		"eslint": "^8.57.0",
 		"eslint-plugin-n8n-nodes-base": "^1.16.3",
