@@ -1,38 +1,62 @@
-import {INodeType, INodeTypeDescription, NodeConnectionType} from 'n8n-workflow';
-import {N8NPropertiesBuilder, N8NPropertiesBuilderConfig} from '@devlikeapro/n8n-openapi-node';
-import * as doc from './openapi.json';
-
-const config: N8NPropertiesBuilderConfig = {}
-const parser = new N8NPropertiesBuilder(doc, config);
-const properties = parser.build()
+import { INodeType, INodeTypeDescription, NodeConnectionType } from 'n8n-workflow';
+import { VoiceOperations, VoiceFields } from './Descriptions/voice';
+import { listSearch } from './Descriptions/utils';
+import { SpeechFields, SpeechOperations } from './Descriptions/speech';
 
 export class ElevenLabs implements INodeType {
-    description: INodeTypeDescription = {
-        displayName: 'ElevenLabs',
-        name: 'elevenLabs',
-        icon: 'file:elevenlabs.svg',
-        group: ['transform'],
-        version: 1,
-        subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-        description: 'Interact with ElevenLabs API',
-        defaults: {
-            name: 'ElevenLabs',
-        },
-        inputs: [NodeConnectionType.Main],
+	description: INodeTypeDescription = {
+		displayName: 'ElevenLabs',
+		name: 'elevenLabs',
+		icon: 'file:elevenlabs.svg',
+		group: ['transform'],
+		version: 1,
+		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
+		description: 'Interact with ElevenLabs API',
+		defaults: {
+			name: 'ElevenLabs',
+		},
+		usableAsTool: true,
+		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
-        credentials: [
-            {
-                name: 'ElevenLabsApi',
-                required: true,
-            },
-        ],
-        requestDefaults: {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            baseURL: '={{$credentials.url}}',
-        },
-        properties: properties,
-    };
+		credentials: [
+			{
+				name: 'elevenLabsApi',
+				required: true,
+			},
+		],
+		requestDefaults: {
+			method: 'POST',
+			baseURL: 'https://api.elevenlabs.io/v1',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		},
+		properties: [
+			{
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Voice',
+						value: 'voice',
+					},
+					{
+						name: 'Speech',
+						value: 'speech',
+					},
+				],
+				default: 'voice',
+			},
+			...VoiceOperations,
+			...VoiceFields,
+			...SpeechOperations,
+			...SpeechFields,
+		]
+	};
+
+	methods = {
+		listSearch,
+	};
 }
