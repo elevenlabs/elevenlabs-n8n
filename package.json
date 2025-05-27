@@ -1,74 +1,74 @@
 {
-	"name": "@elevenlabs/n8n-nodes-elevenlabs",
-	"version": "0.2.1",
-	"description": "Official ElevenLabs node for n8n",
-	"keywords": [
-		"n8n-community-node-package",
-		"ElevenLabs",
-		"voice ai",
-		"text to speech",
-		"speech to text",
-		"elevenlabs",
-		"elevenlabs api",
-		"elevenlabs node",
-		"elevenlabs n8n",
-		"elevenlabs n8n node",
-		"conversational ai",
-		"conversational ai node",
-		"conversational ai n8n",
-		"conversational ai n8n node",
-		"voice agents",
-		"voice agents node",
-		"voice agents n8n",
-		"voice agents n8n node"
-	],
-	"license": "MIT",
-	"homepage": "elevenlabs.io",
-	"author": {
-		"name": "Angelo Giacco",
-		"email": "angelo@elevenlabs.io"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/elevenlabs/elevenlabs-n8n.git"
-	},
-	"engines": {
-		"node": ">=20.15"
-	},
-	"main": "index.js",
-	"scripts": {
-		"build": "tsc && gulp build:icons",
-		"dev": "tsc --watch",
-		"format": "prettier nodes credentials --write",
-		"lint": "eslint nodes credentials package.json",
-		"lintfix": "eslint nodes credentials package.json --fix",
-		"prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
-	},
-	"files": [
-		"dist"
-	],
-	"n8n": {
-		"n8nNodesApiVersion": 1,
-		"credentials": [
-			"dist/credentials/ElevenLabsApi.credentials.js"
-		],
-		"nodes": [
-			"dist/nodes/ElevenLabs/ElevenLabs.node.js"
-		]
-	},
-	"devDependencies": {
-		"@types/node": "^20.12.8",
-		"@typescript-eslint/parser": "~8.32.0",
-		"eslint": "^8.57.0",
-		"eslint-plugin-n8n-nodes-base": "^1.16.3",
-		"gulp": "^5.0.0",
-		"prettier": "^3.5.3",
-		"typescript": "^5.8.2"
-	},
-	"peerDependencies": {
-		"n8n-workflow": "*"
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+  "name": "@elevenlabs/n8n-nodes-elevenlabs",
+  "version": "0.2.2",
+  "description": "Official ElevenLabs node for n8n",
+  "keywords": [
+    "n8n-community-node-package",
+    "ElevenLabs",
+    "voice ai",
+    "text to speech",
+    "speech to text",
+    "elevenlabs",
+    "elevenlabs api",
+    "elevenlabs node",
+    "elevenlabs n8n",
+    "elevenlabs n8n node",
+    "conversational ai",
+    "conversational ai node",
+    "conversational ai n8n",
+    "conversational ai n8n node",
+    "voice agents",
+    "voice agents node",
+    "voice agents n8n",
+    "voice agents n8n node"
+  ],
+  "license": "MIT",
+  "homepage": "elevenlabs.io",
+  "author": {
+    "name": "Angelo Giacco",
+    "email": "angelo@elevenlabs.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elevenlabs/elevenlabs-n8n.git"
+  },
+  "engines": {
+    "node": ">=20.15"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/ElevenLabsApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/elevenlabs/ElevenLabs.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.8",
+    "@typescript-eslint/parser": "~8.32.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.3",
+    "gulp": "^5.0.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
