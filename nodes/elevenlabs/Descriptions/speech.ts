@@ -18,9 +18,6 @@ export const SpeechOperations: INodeProperties[] = [
 						returnFullResponse: true,
 						encoding: 'arraybuffer',
 					},
-					send: {
-						preSend: [ preSendTextToSpeech ],
-					},
 					output: {
 						postReceive: [ returnBinaryData ],
 					}
@@ -31,12 +28,40 @@ export const SpeechOperations: INodeProperties[] = [
 				value: 'speechToText',
 				description: 'Transcribe an audio or video file',
 				action: 'Transcribe audio or video',
+				routing: {
+					request: {
+						url: '/speech-to-text',
+						method: 'POST',
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						},
+					},
+					send: {
+						preSend: [ preSendSpeechToText ],
+					},
+				},
 			},
 			{
 				name: 'Speech to Speech',
 				value: 'speechToSpeech',
 				description: 'Transform audio from one voice to another',
 				action: 'Change a voice',
+				routing: {
+					send: {
+						preSend: [ preSendSpeechToSpeech ],
+					},
+					request: {
+						url: '={{"/speech-to-speech/"+$parameter["voice"]}}',
+						returnFullResponse: true,
+						encoding: 'arraybuffer',
+						headers: {
+							'Content-Type': 'multipart/form-data',
+						},
+					},
+					output: {
+						postReceive: [ returnBinaryData ],
+					},
+				},
 			},
 		],
 		default: 'textToSpeech',
@@ -95,6 +120,12 @@ export const SpeechFields: INodeProperties[] = [
 			},
 		},
 		required: true,
+		routing: {
+			send: {
+				type: 'body',
+				property: 'text',
+			},
+		},
 	},
 	{
 		displayName: 'Additional Options',
@@ -114,7 +145,7 @@ export const SpeechFields: INodeProperties[] = [
 		description: 'Select the model to use for the conversion',
 		name: 'model',
 		type: 'resourceLocator',
-		default: { mode: 'list', value: null },
+		default: { mode: 'list', value: 'eleven_multilingual_v2' },
 		modes: [
 			{
 				displayName: 'From list',
@@ -132,6 +163,12 @@ export const SpeechFields: INodeProperties[] = [
 				placeholder: '9BWtsMINqrJLrRacOk9x',
 			},
 		],
+		routing: {
+			send: {
+				type: 'body',
+				property: 'model_id',
+			},
+		},
 		},
 			{
 				displayName: 'Output Format',
@@ -237,6 +274,12 @@ export const SpeechFields: INodeProperties[] = [
 					},
 				],
 				default: 'mp3_44100_128',
+				routing: {
+			send: {
+				type: 'query',
+				property: 'output_format',
+			},
+		},
 			},
 			{
 				displayName: 'Language Code',
@@ -244,6 +287,13 @@ export const SpeechFields: INodeProperties[] = [
 				description: 'Language code (ISO 639-1) used to enforce a language for the model',
 				type: 'string',
 				default: 'en',
+				routing: {
+					send: {
+						type: 'body',
+						property: 'language_code',
+						value: '={{ $parameter["model"].includes("turbo_v2") || $parameter["model"].includes("flash_v2") ? $value : undefined }}',
+					},
+				},
 			},
 			{
 				displayName: 'Voice Settings',
@@ -257,6 +307,13 @@ export const SpeechFields: INodeProperties[] = [
   "speed": 1
 }`,
 				description: 'Voice settings overriding stored settings for the given voice',
+				routing: {
+				send: {
+					type: 'body',
+					property: 'voice_settings',
+					value: '={{ JSON.parse($value) }}',
+				},
+			},
 			}
 		],
 	},
@@ -420,7 +477,7 @@ export const SpeechFields: INodeProperties[] = [
 				placeholder: '9BWtsMINqrJLrRacOk9x',
 			},
 		],
-		},
+			},
 			{
 				displayName: 'Output Format',
 				name: 'outputFormat',
@@ -525,6 +582,12 @@ export const SpeechFields: INodeProperties[] = [
 					},
 				],
 				default: 'mp3_44100_128',
+				routing: {
+					send: {
+						type: 'query',
+						property: 'output_format',
+					},
+				},
 			},
 			{
 				displayName: 'Voice Settings',
@@ -543,35 +606,6 @@ export const SpeechFields: INodeProperties[] = [
 	},
 ];
 
-async function preSendTextToSpeech( this: IExecuteSingleFunctions, requestOptions: IHttpRequestOptions ): Promise<IHttpRequestOptions> {
-	const text = this.getNodeParameter('text') as string;
-	const additionalOptions = this.getNodeParameter('additionalOptions', {}) as IDataObject;
-
-	const model_id = additionalOptions.model as string || 'eleven_monolingual_v1';
-	const language_code = additionalOptions.language_code as string;
-	const voice_settings = additionalOptions.voiceSettings as IDataObject || {};
-
-	const data: IDataObject = {
-		text,
-		model_id,
-		voice_settings
-	};
-
-	if (language_code && (model_id.includes('turbo_v2') || model_id.includes('flash_v2'))) {
-		data.language_code = language_code;
-	}
-
-	if (additionalOptions.output_format) {
-		requestOptions.qs = {
-			...requestOptions.qs,
-			output_format: additionalOptions.output_format,
-		};
-	}
-
-	requestOptions.body = data;
-	return requestOptions;
-}
-
 async function returnBinaryData<PostReceiveAction>( this: IExecuteSingleFunctions, items: INodeExecutionData[], responseData: IN8nHttpFullResponse ): Promise<INodeExecutionData[]> {
 	const operation = this.getNodeParameter('operation') as string;
 
@@ -582,4 +616,53 @@ async function returnBinaryData<PostReceiveAction>( this: IExecuteSingleFunction
 	);
 
 	return items.map(() => ({ json: responseData.headers, binary: { ['data']: binaryData } }));
+}
+
+async function preSendSpeechToText( this: IExecuteSingleFunctions, requestOptions: IHttpRequestOptions ): Promise<IHttpRequestOptions> {
+	const binaryInputField = this.getNodeParameter('file', 'data') as string;
+	const additionalOptions = this.getNodeParameter('additionalOptions', {}) as IDataObject;
+
+	const fileBuffer = await this.helpers.getBinaryDataBuffer(binaryInputField);
+
+	const model_id = additionalOptions.model as string || 'scribe_v1';
+	const language_code = additionalOptions.languageCode as string;
+	const num_speakers = additionalOptions.numberOfSpeakers as number;
+	const diarize = additionalOptions.diarize as boolean;
+
+	const formData = new FormData();
+	formData.append('file', new Blob([fileBuffer]));
+	formData.append('model_id', model_id);
+
+	if (language_code) {
+		formData.append('language_code', language_code);
+	}
+
+	if (num_speakers) {
+		formData.append('num_speakers', String(num_speakers));
+	}
+
+	if (diarize !== undefined) {
+		formData.append('diarize', String(diarize));
+	}
+
+	requestOptions.body = formData;
+	return requestOptions;
+}
+
+async function preSendSpeechToSpeech( this: IExecuteSingleFunctions, requestOptions: IHttpRequestOptions ): Promise<IHttpRequestOptions> {
+	const binaryInputField = this.getNodeParameter('file', 'data') as string;
+	const additionalOptions = this.getNodeParameter('additionalOptions', {}) as IDataObject;
+
+	const fileBuffer = await this.helpers.getBinaryDataBuffer(binaryInputField);
+
+	const formData = new FormData();
+	formData.append('audio', new Blob([fileBuffer]));
+	formData.append('model_id', (additionalOptions.model as string) || 'eleven_english_sts_v2');
+
+	const voiceSettings = additionalOptions.voiceSettings as IDataObject || '{}';
+
+	formData.append('voice_settings', voiceSettings);
+
+	requestOptions.body = formData;
+	return requestOptions;
 }

@@ -265,7 +265,7 @@ export const VoiceFields: INodeProperties[] = [
 async function preSendAudioFiles(this: IExecuteSingleFunctions, requestOptions: IHttpRequestOptions): Promise<IHttpRequestOptions> {
 	const formData = new FormData();
 	const binaryData = this.getNodeParameter('audioFiles', '') as string;
-	const audioBuffer = await this.helpers.getBinaryDataBuffer(binaryData);
+	const fileBuffer = await this.helpers.getBinaryDataBuffer(binaryData);
 	const name = this.getNodeParameter('name') as string;
 
 	const description = this.getNodeParameter('additionalFields.description', '') as string;
@@ -274,7 +274,7 @@ async function preSendAudioFiles(this: IExecuteSingleFunctions, requestOptions: 
 	formData.append('name', name);
 	formData.append('description', description);
 	formData.append('labels', labels);
-	formData.append('files', new Blob([audioBuffer]));
+	formData.append('files', new Blob([fileBuffer]));
 
 	requestOptions.body = formData;
 
