@@ -608,11 +608,30 @@ export const SpeechFields: INodeProperties[] = [
 
 async function returnBinaryData<PostReceiveAction>( this: IExecuteSingleFunctions, items: INodeExecutionData[], responseData: IN8nHttpFullResponse ): Promise<INodeExecutionData[]> {
 	const operation = this.getNodeParameter('operation') as string;
+	const additionalOptions = this.getNodeParameter('additionalOptions', {}) as IDataObject;
+	const outputFormat = (additionalOptions.outputFormat as string) || 'mp3_44100_128';
+
+	let extension = 'mp3';
+	let mimeType = 'audio/mpeg';
+
+	if (outputFormat.startsWith('pcm_')) {
+		extension = 'pcm';
+		mimeType = 'audio/pcm';
+	} else if (outputFormat.startsWith('ulaw_')) {
+		extension = 'ulaw';
+		mimeType = 'audio/basic';
+	} else if (outputFormat.startsWith('alaw_')) {
+		extension = 'alaw';
+		mimeType = 'audio/x-alaw';
+	} else if (outputFormat.startsWith('opus_')) {
+		extension = 'opus';
+		mimeType = 'audio/opus';
+	}
 
 	const binaryData = await this.helpers.prepareBinaryData(
 		responseData.body as Buffer,
-		`audio.${operation}.mp3`,
-		'audio/mp3',
+		`audio.${operation}.${extension}`,
+		mimeType,
 	);
 
 	return items.map(() => ({ json: responseData.headers, binary: { ['data']: binaryData } }));
