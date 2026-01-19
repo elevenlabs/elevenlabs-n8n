@@ -1,6 +1,6 @@
 {
   "name": "@elevenlabs/n8n-nodes-elevenlabs",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Official ElevenLabs node for n8n",
   "keywords": [
     "n8n-community-node-package",
@@ -67,6 +67,9 @@
   },
   "peerDependencies": {
     "n8n-workflow": "*"
+  },
+  "overrides": {
+    "form-data": "^4.0.4"
   },
   "publishConfig": {
     "access": "public"
