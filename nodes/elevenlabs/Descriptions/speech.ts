@@ -15,6 +15,7 @@ export const SpeechOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						url: '={{"/text-to-speech/"+$parameter["voice"]}}',
+						method: 'POST',
 						returnFullResponse: true,
 						encoding: 'arraybuffer',
 					},
@@ -52,6 +53,7 @@ export const SpeechOperations: INodeProperties[] = [
 					},
 					request: {
 						url: '={{"/speech-to-speech/"+$parameter["voice"]}}',
+						method: 'POST',
 						returnFullResponse: true,
 						encoding: 'arraybuffer',
 						headers: {
