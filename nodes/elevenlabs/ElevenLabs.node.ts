@@ -1,4 +1,4 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType } from 'n8n-workflow';
+import { INodeType, INodeTypeDescription } from 'n8n-workflow';
 import { VoiceOperations, VoiceFields } from './Descriptions/voice';
 import { listSearch } from './Descriptions/utils';
 import { SpeechFields, SpeechOperations } from './Descriptions/speech';
@@ -16,8 +16,8 @@ export class ElevenLabs implements INodeType {
 			name: 'ElevenLabs',
 		},
 		usableAsTool: true,
-		inputs: [NodeConnectionType.Main],
-		outputs: [NodeConnectionType.Main],
+		inputs: ['main'],
+		outputs: ['main'],
 		credentials: [
 			{
 				name: 'elevenLabsApi',
