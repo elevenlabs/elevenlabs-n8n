@@ -50,7 +50,8 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ElevenLabsApi.credentials.js"
+      "dist/credentials/ElevenLabsApi.credentials.js",
+      "dist/credentials/SixtyDbApi.credentials.js"
     ],
     "nodes": [
       "dist/nodes/elevenlabs/ElevenLabs.node.js"
@@ -58,12 +59,16 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.8",
+    "@types/ws": "^8.5.10",
     "@typescript-eslint/parser": "~8.32.0",
     "eslint": "^8.57.0",
     "eslint-plugin-n8n-nodes-base": "^1.16.3",
     "gulp": "^5.0.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
   },
   "peerDependencies": {
     "n8n-workflow": "*"

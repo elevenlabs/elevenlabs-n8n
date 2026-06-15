@@ -76,6 +76,79 @@ export const SpeechOperations: INodeProperties[] = [
 export const SpeechFields: INodeProperties[] = [
 	// Text to Speech
 	{
+		displayName: 'Provider',
+		name: 'provider',
+		type: 'options',
+		noDataExpression: true,
+		description: 'Which text-to-speech provider to use. Both providers are interchangeable; the rest of the workflow does not change.',
+		options: [
+			{
+				name: 'ElevenLabs',
+				value: 'elevenLabs',
+				description: 'Use the ElevenLabs API (requires ElevenLabs API credentials)',
+			},
+			{
+				name: '60db',
+				value: '60db',
+				description: 'Use the 60db API (requires 60db API credentials)',
+			},
+		],
+		default: 'elevenLabs',
+		displayOptions: {
+			show: {
+				resource: ['speech'],
+				operation: ['textToSpeech'],
+			},
+		},
+	},
+	{
+		displayName: 'Transport',
+		name: 'transport',
+		type: 'options',
+		noDataExpression: true,
+		description: 'How to call the 60db API. All transports return a single audio binary; streaming and WebSocket assemble chunks before returning.',
+		options: [
+			{
+				name: 'HTTP',
+				value: 'http',
+				description: 'Simple request/response — POST /tts-synthesize',
+			},
+			{
+				name: 'Streaming (NDJSON)',
+				value: 'stream',
+				description: 'Chunked NDJSON audio — POST /tts-stream',
+			},
+			{
+				name: 'WebSocket',
+				value: 'websocket',
+				description: 'Real-time WebSocket synthesis — wss://api.60db.ai/ws/tts',
+			},
+		],
+		default: 'http',
+		displayOptions: {
+			show: {
+				resource: ['speech'],
+				operation: ['textToSpeech'],
+				provider: ['60db'],
+			},
+		},
+	},
+	{
+		displayName: 'Voice ID',
+		name: 'sixtyDbVoiceId',
+		type: 'string',
+		default: '',
+		placeholder: 'fbb75ed2-975a-40c7-9e06-38e30524a9a1',
+		description: 'The 60db voice ID to use for the conversion',
+		displayOptions: {
+			show: {
+				resource: ['speech'],
+				operation: ['textToSpeech'],
+				provider: ['60db'],
+			},
+		},
+	},
+	{
 		displayName: 'Voice',
 		description: 'Select the voice to use for the conversion',
 		name: 'voice',
@@ -85,6 +158,7 @@ export const SpeechFields: INodeProperties[] = [
 			show: {
 				resource: ['speech'],
 				operation: ['textToSpeech'],
+				provider: ['elevenLabs'],
 			},
 		},
 		modes: [
@@ -127,6 +201,110 @@ export const SpeechFields: INodeProperties[] = [
 			},
 		},
 	},
+	// 60db Additional Options
+	{
+		displayName: 'Additional Options',
+		name: 'sixtyDbOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['speech'],
+				operation: ['textToSpeech'],
+				provider: ['60db'],
+			},
+		},
+		options: [
+			{
+				displayName: 'Audio Encoding',
+				name: 'audioEncoding',
+				type: 'options',
+				default: 'LINEAR16',
+				description: 'WebSocket audio encoding. LINEAR16 and MULAW are wrapped in a WAV container.',
+				// eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
+				options: [
+					{ name: 'LINEAR16 (PCM)', value: 'LINEAR16' },
+					{ name: 'MULAW', value: 'MULAW' },
+					{ name: 'OGG_OPUS', value: 'OGG_OPUS' },
+				],
+				displayOptions: {
+					show: {
+						'/transport': ['websocket'],
+					},
+				},
+			},
+			{
+				displayName: 'Enhance',
+				name: 'enhance',
+				type: 'boolean',
+				default: true,
+				description: 'Whether to apply audio quality enhancement',
+			},
+			{
+				displayName: 'Output Format',
+				name: 'outputFormat',
+				type: 'options',
+				default: 'mp3',
+				description: 'Audio container for the HTTP and streaming transports',
+				// eslint-disable-next-line n8n-nodes-base/node-param-options-type-unsorted-items
+				options: [
+					{ name: 'MP3', value: 'mp3' },
+					{ name: 'WAV', value: 'wav' },
+					{ name: 'OGG', value: 'ogg' },
+					{ name: 'FLAC', value: 'flac' },
+				],
+				displayOptions: {
+					show: {
+						'/transport': ['http', 'stream'],
+					},
+				},
+			},
+			{
+				displayName: 'Sample Rate',
+				name: 'sampleRate',
+				type: 'options',
+				default: 16000,
+				description: 'WebSocket output sample rate in Hz',
+				options: [
+					{ name: '8000 Hz', value: 8000 },
+					{ name: '16000 Hz', value: 16000 },
+					{ name: '24000 Hz', value: 24000 },
+					{ name: '48000 Hz', value: 48000 },
+				],
+				displayOptions: {
+					show: {
+						'/transport': ['websocket'],
+					},
+				},
+			},
+			{
+				displayName: 'Similarity',
+				name: 'similarity',
+				type: 'number',
+				default: 75,
+				typeOptions: { minValue: 0, maxValue: 100 },
+				description: 'How closely to match the source voice (0–100)',
+			},
+			{
+				displayName: 'Speed',
+				name: 'speed',
+				type: 'number',
+				default: 1,
+				typeOptions: { minValue: 0.5, maxValue: 2, numberPrecision: 2 },
+				description: 'Playback rate multiplier (0.5–2.0)',
+			},
+			{
+				displayName: 'Stability',
+				name: 'stability',
+				type: 'number',
+				default: 50,
+				typeOptions: { minValue: 0, maxValue: 100 },
+				description: 'Voice consistency (0–100; lower is more expressive)',
+			},
+		],
+	},
+	// ElevenLabs Additional Options
 	{
 		displayName: 'Additional Options',
 		name: 'additionalOptions',
@@ -137,6 +315,7 @@ export const SpeechFields: INodeProperties[] = [
 			show: {
 				resource: ['speech'],
 				operation: ['textToSpeech'],
+				provider: ['elevenLabs'],
 			},
 		},
 		options: [
