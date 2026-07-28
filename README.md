@@ -18,7 +18,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 ## Operations
 
 ### Speech
-- Text to Speech
+- Text to Speech (provider: **ElevenLabs** or **60db**)
 - Speech to Text
 - Speech to Speech
 
@@ -28,9 +28,20 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 - Create Clone
 - Delete
 
+## Text to Speech providers
+
+Text to Speech can run against two interchangeable providers, selected with the **Provider** dropdown. The rest of the workflow is unchanged — both return a single audio binary on the `data` property.
+
+- **ElevenLabs** — uses the ElevenLabs `text-to-speech` endpoint (voice list, models, output formats, voice settings).
+- **60db** — uses the [60db](https://docs.60db.ai) API with a selectable **Transport**:
+  - **HTTP** — `POST /tts-synthesize` (base64 JSON, decoded to binary)
+  - **Streaming** — `POST /tts-stream` (NDJSON chunks, concatenated)
+  - **WebSocket** — `wss://api.60db.ai/ws/tts` (LINEAR16/MULAW frames are wrapped in a WAV container)
+
 ## Credentials
 
-This node requires an API Key from ElevenLabs, You can generate one by going to your [Dashboard](https://elevenlabs.io/app/settings/api-keys).
+- **ElevenLabs API** — required for Voice operations, Speech to Text, Speech to Speech, and ElevenLabs Text to Speech. Generate a key from your [ElevenLabs Dashboard](https://elevenlabs.io/app/settings/api-keys).
+- **60db API** — required only when Text to Speech uses the 60db provider. The key is sent as a Bearer token (HTTP/streaming) and as the `apiKey` query parameter (WebSocket).
 
 ## Compatibility
 
